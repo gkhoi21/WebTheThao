@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUỆ THU SPORT - Thể Thao Cao Cấp</title>
+ <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="min-h-screen">
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[9999] flex flex-col gap-3" role="alert" aria-live="polite"></div>
+
+  <!-- ===== HEADER ===== -->
+  <header class="fixed top-0 left-0 right-0 z-50 border-b border-[var(--border)]" style="background:rgba(11,11,15,0.85);backdrop-filter:blur(16px);">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center gap-4">
+      <!-- Logo -->
+      <a href="#" class="font-display text-2xl font-bold tracking-wider flex items-center gap-2 shrink-0" onclick="goHome()">
+        <span style="color:var(--accent);">HUỆ THU</span><span class="text-white">SPORT</span>
+      </a>
+      <!-- Search -->
+      <div class="relative flex-1 max-w-xl hidden sm:block" id="search-wrapper">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm"></i>
+          <input type="text" id="search-input" class="input-field pl-11 pr-12 py-2.5 text-sm" placeholder=" Tìm kiếm sản phẩm thể thao..." autocomplete="off" aria-label="Tìm kiếm sản phẩm">
+          <button id="search-btn" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center hover:bg-[var(--accent-hover)] transition" aria-label="Tìm kiếm">
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+        </div>
+        <div id="search-dropdown" class="search-dropdown hidden"></div>
+      </div>
+      <!-- Actions -->
+      <div class="flex items-center gap-2 ml-auto shrink-0">
+        <!-- Mobile search toggle -->
+        <button class="sm:hidden w-10 h-10 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] transition" onclick="toggleMobileSearch()" aria-label="Tìm kiếm">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+        <!-- Cart -->
+        <button class="relative w-10 h-10 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] transition" onclick="openCart()" aria-label="Giỏ hàng">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span id="cart-count" class="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-[var(--accent)] text-white text-[10px] font-bold flex items-center justify-center hidden">0</span>
+        </button>
+        <button class="h-9 px-3 rounded-lg border border-border flex items-center gap-2 text-muted hover:text-fg transition text-sm" onclick="openOrderHistory()" aria-label="Đơn hàng">
+  <span class="hidden md:inline">Đơn Hàng</span>
+</button>
+        <!-- User -->
+        <button id="auth-btn" class="h-10 px-4 rounded-lg border border-[var(--border)] flex items-center gap-2 text-[var(--muted)] hover:text-[var(--fg)] transition text-sm" onclick="openAuthModal()" aria-label="Đăng nhập">
+          <i class="fa-solid fa-user"></i>
+          <span class="hidden md:inline" id="auth-btn-text">Đăng nhập</span>
+        </button>
+        <!-- Logged in state -->
+        <div id="user-menu" class="hidden items-center gap-2">
+          <div class="w-9 h-9 rounded-full bg-[var(--accent)] flex items-center justify-center text-white font-bold text-sm" id="user-avatar">A</div>
+          <span class="hidden md:inline text-sm font-medium" id="user-name-display"></span>
+          <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--danger)] transition text-xs" onclick="logout()" aria-label="Đăng xuất" title="Đăng xuất">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- Mobile search bar -->
+    <div id="mobile-search" class="hidden px-4 pb-3 sm:hidden">
+      <div class="relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[var(--muted)] text-sm"></i>
+        <input type="text" id="mobile-search-input" class="input-field pl-11 pr-12 py-2.5 text-sm" placeholder="Tìm kiếm..." autocomplete="off" aria-label="Tìm kiếm sản phẩm">
+        <button class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-[var(--accent)] text-white flex items-center justify-center" onclick="handleMobileSearch()" aria-label="Tìm kiếm">
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN ===== -->
+  <main class="pt-16">
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden" style="min-height:520px;">
+      <div class="hero-shape animate-float1" style="width:300px;height:300px;top:-50px;left:-80px;"></div>
+      <div class="hero-shape animate-float2" style="width:200px;height:200px;bottom:-30px;right:10%;"></div>
+      <div class="hero-shape animate-float3" style="width:150px;height:150px;top:20%;right:-40px;"></div>
+      <div class="hero-shape animate-float2" style="width:100px;height:100px;bottom:20%;left:15%;animation-delay:-3s;"></div>
+      <!-- Grid pattern -->
+      <div class="absolute inset-0 opacity-[0.03]" style="background-image:linear-gradient(var(--accent) 1px, transparent 1px),linear-gradient(90deg, var(--accent) 1px, transparent 1px);background-size:60px 60px;"></div>
+      <div class="relative max-w-7xl mx-auto px-4 py-20 md:py-28 flex flex-col items-center text-center">
+        <div class="animate-slide-up" style="animation-delay:0.1s;">
+          <span class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase border border-[var(--accent)] text-[var(--accent)] mb-6">Bộ sưu tập mới 2026</span>
+        </div>
+        <h1 class="font-display text-5xl md:text-7xl lg:text-8xl font-bold uppercase leading-[0.95] mb-6 animate-slide-up" style="animation-delay:0.2s;">
+          <span class="text-white">Thiết Kế</span><br>
+          <span style="color:var(--accent);">Thể Thao-Thoải Mái</span>
+        </h1>
+        <p class="text-[var(--muted)] text-lg md:text-xl max-w-2xl mb-10 animate-slide-up" style="animation-delay:0.35s;">
+          Chọn mẫu, màu sắc, in tên và số — tạo dáng áo thể thao độc quyền cho đội bóng của bạn.
+        </p>
+        <div class="flex gap-4 animate-slide-up" style="animation-delay:0.5s;">
+          <button class="btn-primary animate-pulse-glow text-base px-8 py-3.5" onclick="document.getElementById('products-section').scrollIntoView({behavior:'smooth'})">
+            <i class="fa-solid fa-shirt"></i> Khám Phá Ngay
+          </button>
+          <button class="btn-secondary text-base px-8 py-3.5" onclick="openAuthModal()">
+            <i class="fa-solid fa-user-plus"></i> Đăng Ký
+          </button>
+        </div>
+        <!-- Stats -->
+        <div class="flex gap-8 md:gap-16 mt-16 animate-slide-up" style="animation-delay:0.65s;">
+          <div class="text-center"><div class="font-display text-3xl md:text-4xl font-bold text-white">500+</div><div class="text-[var(--muted)] text-sm mt-1">Mẫu thiết kế</div></div>
+          <div class="text-center"><div class="font-display text-3xl md:text-4xl font-bold text-white">10K+</div><div class="text-[var(--muted)] text-sm mt-1">Khách hàng</div></div>
+          <div class="text-center"><div class="font-display text-3xl md:text-4xl font-bold text-white">4.9</div><div class="text-[var(--muted)] text-sm mt-1">Đánh giá</div></div>
+        </div>
+      </div>
+      <!-- Gradient fade bottom -->
+      <div class="absolute bottom-0 left-0 right-0 h-24" style="background:linear-gradient(transparent, var(--bg));"></div>
+    </section>
+
+    <!-- Categories -->
+    <section class="max-w-7xl mx-auto px-4 py-8" id="categories-section">
+      <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-none" id="category-bar" style="-ms-overflow-style:none;scrollbar-width:none;">
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="max-w-7xl mx-auto px-4 pb-20" id="products-section">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+          <h2 class="font-display text-3xl md:text-4xl font-bold text-white">Sản Phẩm</h2>
+          <p class="text-[var(--muted)] mt-1" id="product-subtitle">Tất cả sản phẩm thể thao</p>
+        </div>
+        <div class="text-sm text-[var(--muted)]" id="product-count-label"></div>
+      </div>
+      <!-- Search results area (hidden) -->
+      <div id="search-results-area" class="hidden">
+        <div class="flex items-center justify-between mb-6">
+          <p class="text-[var(--muted)]" id="search-results-label"></p>
+          <button class="text-sm text-[var(--accent)] hover:underline" onclick="clearSearch()">Xoá tìm kiếm</button>
+        </div>
+        <div id="search-results-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+        <div id="no-results" class="hidden text-center py-20">
+          <i class="fa-solid fa-face-sad-tear text-5xl text-[var(--muted)] mb-4"></i>
+          <p class="text-xl font-semibold text-[var(--fg)]">Không tìm thấy sản phẩm</p>
+          <p class="text-[var(--muted)] mt-2">Thử tìm kiếm với từ khóa khác</p>
+        </div>
+      </div>
+      <!-- Normal product grid -->
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="border-t border-[var(--border)] py-12" style="background:var(--bg2);">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div>
+        <div class="font-display text-2xl font-bold mb-4"><span style="color:var(--accent);">HUỆ THU</span><span class="text-white"> SPORT</span></div>
+        <p class="text-[var(--muted)] text-sm leading-relaxed">Thương hiệu thể thao cao cấp với hệ thống thiết kế trực tuyến độc đáo.</p>
+      </div>
+      <div>
+        <h4 class="font-semibold text-white mb-4">Sản Phẩm</h4>
+        <ul class="space-y-2 text-sm text-[var(--muted)]">
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Áo Bóng Đá</li>
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Quần Bóng Đá</li>
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Bộ Đồ Bóng Đá</li>
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Tất Bóng Đá</li>
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Giày Bóng Đá</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-white mb-4">Hỗ Trợ</h4>
+        <ul class="space-y-2 text-sm text-[var(--muted)]">
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Hướng Dẫn Đặt Hàng</li>
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Chính Sách Đổi Trả</li>
+          <li class="hover:text-[var(--accent)] cursor-pointer transition">Liên Hệ</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-white mb-4">Kết Nối</h4>
+        <div class="flex gap-3">
+          <a class="w-10 h-10 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a class="w-10 h-10 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+          <a class="w-10 h-10 rounded-lg border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 mt-10 pt-6 border-t border-[var(--border)] text-center text-sm text-[var(--muted)]">
+      2026 HUỆ THU SPORT. All rights reserved.
+    </div>
+  </footer>
+
+  <!-- ===== AUTH MODAL ===== -->
+  <div id="auth-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Đăng nhập / Đăng ký">
+    <div class="modal-content w-full max-w-md p-0">
+      <div class="flex border-b border-[var(--border)]">
+        <button class="tab-btn active flex-1" data-tab="login" onclick="switchAuthTab('login')">Đăng Nhập</button>
+        <button class="tab-btn flex-1" data-tab="register" onclick="switchAuthTab('register')">Đăng Ký</button>
+      </div>
+      <div class="p-6">
+        <!-- Login Form -->
+        <form id="login-form" class="space-y-4" onsubmit="handleLogin(event)">
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Email</label>
+            <input type="email" id="login-email" class="input-field" placeholder="example@gmail.com" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Mật khẩu</label>
+            <div class="relative">
+              <input type="password" id="login-password" class="input-field pr-11" placeholder="Nhập mật khẩu" required>
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--fg)] transition" onclick="togglePasswordVisibility('login-password', this)" aria-label="Hiện/Ẩn mật khẩu">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center py-3">Đăng Nhập</button>
+          <p class="text-center text-sm text-[var(--muted)]">Tài khoản test: <span class="text-[var(--accent)]">test@gmail.com</span> / <span class="text-[var(--accent)]">123456</span></p>
+        </form>
+        <!-- Register Form -->
+        <form id="register-form" class="space-y-4 hidden" onsubmit="handleRegister(event)">
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Họ và tên</label>
+            <input type="text" id="reg-name" class="input-field" placeholder="Nguyen Van A" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Email</label>
+            <input type="email" id="reg-email" class="input-field" placeholder="example@gmail.com" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Mật khẩu</label>
+            <div class="relative">
+              <input type="password" id="reg-password" class="input-field pr-11" placeholder="Ít nhất 6 ký tự" required minlength="6">
+              <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--muted)] hover:text-[var(--fg)] transition" onclick="togglePasswordVisibility('reg-password', this)" aria-label="Hiện/Ẩn mật khẩu">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Xác nhận mật khẩu</label>
+            <input type="password" id="reg-confirm" class="input-field" placeholder="Nhập lại mật khẩu" required>
+          </div>
+          <button type="submit" class="btn-primary w-full justify-center py-3">Đăng Ký</button>
+        </form>
+      </div>
+      <button class="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] hover:bg-[var(--bg)] transition" onclick="closeAuthModal()" aria-label="Dong">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== DESIGN MODAL ===== -->
+    <div id="design-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Thiết kế sản phẩm">
+    <div class="modal-content w-full max-w-4xl p-0 overflow-hidden relative">
+      <div class="p-4 border-b border-[var(--border)] flex items-center justify-between">
+        <h3 class="font-display text-lg font-bold text-white" id="design-modal-title">Thiết Kế Sản Phẩm</h3>
+        <button class="w-7 h-7 rounded-md flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] hover:bg-[var(--bg)] transition" onclick="closeDesignModal()" aria-label="Đóng"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div class="flex flex-col md:flex-row">
+        <div class="md:w-[55%] p-5">
+          <div class="shirt-preview-container aspect-square">
+            <div id="design-preview" class="relative z-10" style="width:80%;max-width:260px;"></div>
+          </div>
+        </div>
+        <div class="md:w-[45%] p-5 border-t md:border-t-0 md:border-l border-[var(--border)] overflow-y-auto" style="max-height:70vh;">
+          <p class="text-xs text-[var(--muted)] mb-0.5" id="design-product-name"></p>
+          <p class="font-display text-xl font-bold text-white mb-4" id="design-product-price"></p>
+          <div class="mb-4" id="design-color-section">
+            <label class="block text-sm font-medium mb-2 text-[var(--fg)]">Chọn màu sắc <span class="text-[var(--danger)]">*</span></label>
+            <div class="flex gap-2.5 flex-wrap" id="design-colors"></div>
+            <p class="text-xs text-[var(--danger)] mt-1 hidden" id="design-color-error">Vui lòng chọn màu sắc</p>
+          </div>
+          <div class="mb-4" id="design-socktype-section" style="display:none;">
+            <label class="block text-sm font-medium mb-2 text-[var(--fg)]">Loại tất</label>
+            <div class="flex gap-2">
+              <button type="button" class="cat-btn active text-xs py-1.5 px-3" id="sock-short-btn" onclick="selectSockType('short')">Cổ Ngắn</button>
+              <button type="button" class="cat-btn text-xs py-1.5 px-3" id="sock-long-btn" onclick="selectSockType('long')">Cổ Dài</button>
+            </div>
+          </div>
+          <div class="mb-4" id="design-name-section" style="display:none;">
+            <label class="block text-sm font-medium mb-1.5 text-[var(--fg)]">Tên in <span class="text-[var(--danger)]">*</span></label>
+            <input type="text" id="design-name" class="input-field text-sm" placeholder="VD: NGUYỄN" maxlength="20">
+            <div class="flex justify-between mt-1">
+              <p class="text-xs text-[var(--danger)] hidden" id="design-name-error">Vui lòng nhập tên in</p>
+              <p class="text-xs text-[var(--muted)] ml-auto"><span id="design-name-count">0</span>/20</p>
+            </div>
+          </div>
+          <div class="mb-4" id="design-number-section" style="display:none;">
+            <label class="block text-sm font-medium mb-1.5 text-[var(--fg)]">Số in <span class="text-[var(--danger)]">*</span></label>
+            <input type="text" id="design-number" class="input-field text-sm" placeholder="VD: 10" maxlength="3">
+            <div class="flex justify-between mt-1">
+              <p class="text-xs text-[var(--danger)] hidden" id="design-number-error">Vui lòng nhập số in</p>
+              <p class="text-xs text-[var(--muted)] ml-auto"><span id="design-number-count">0</span>/3</p>
+            </div>
+          </div>
+          <div class="mb-5">
+            <label class="block text-sm font-medium mb-1.5 text-[var(--fg)]">Số lượng</label>
+            <div class="flex items-center gap-2.5">
+              <button type="button" class="qty-btn" onclick="changeDesignQty(-1)"><i class="fa-solid fa-minus text-xs"></i></button>
+              <input type="number" id="design-qty" class="input-field w-16 text-center text-sm" value="1" min="1">
+              <button type="button" class="qty-btn" onclick="changeDesignQty(1)"><i class="fa-solid fa-plus text-xs"></i></button>
+              <span class="text-xs text-[var(--muted)] ml-1" id="design-stock-label"></span>
+            </div>
+          </div>
+          <div class="flex gap-2.5">
+            <button class="btn-secondary flex-1 justify-center text-sm py-2.5" onclick="handleSaveDesign()"><i class="fa-solid fa-floppy-disk"></i> Lưu Thiết Kế</button>
+            <button class="btn-primary flex-1 justify-center text-sm py-2.5" onclick="handleAddToCartFromDesign()"><i class="fa-solid fa-cart-plus"></i> Thêm Vào Giỏ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CART SIDEBAR ===== -->
+  <div id="cart-overlay" class="cart-overlay" onclick="closeCart()"></div>
+  <aside id="cart-sidebar" class="cart-sidebar" role="dialog" aria-label="Giỏ hàng">
+    <div class="p-5 border-b border-[var(--border)] flex items-center justify-between shrink-0">
+      <h3 class="font-display text-xl font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-bag-shopping text-[var(--accent)]"></i> Giỏ hàng
+        <span class="text-sm font-normal text-[var(--muted)]" id="cart-item-count">(0)</span>
+      </h3>
+      <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] hover:bg-[var(--bg)] transition" onclick="closeCart()" aria-label="Dong">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-5" id="cart-items-container">
+      <div id="cart-empty" class="text-center py-16">
+        <i class="fa-solid fa-bag-shopping text-5xl text-[var(--border)] mb-4"></i>
+        <p class="text-[var(--muted)]">Giỏ hàng của bạn đang trống</p>
+      </div>
+      <div id="cart-items-list" class="space-y-4 hidden"></div>
+    </div>
+    <div id="cart-footer" class="border-t border-[var(--border)] p-5 shrink-0 hidden">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-[var(--muted)]">Tạm tính:</span>
+        <span class="font-display text-lg font-bold text-white" id="cart-subtotal">0đ</span>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button class="btn-danger flex-1 justify-center flex items-center gap-2 py-3" onclick="handleClearCart()">
+          <i class="fa-solid fa-trash"></i> Xoá toàn bộ
+        </button>
+        <button class="btn-primary flex-1 justify-center py-3" onclick="openCheckout()">
+          <i class="fa-solid fa-credit-card"></i> Đặt hàng
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== CHECKOUT MODAL ===== -->
+  <div id="checkout-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Đặt hàng">
+    <div class="modal-content w-full max-w-2xl p-0">
+      <div class="p-5 border-b border-[var(--border)] flex items-center justify-between">
+        <h3 class="font-display text-xl font-bold text-white">Đặt hàng</h3>
+        <button class="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] hover:bg-[var(--bg)] transition" onclick="closeCheckout()" aria-label="Dong">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <form id="checkout-form" onsubmit="handlePlaceOrder(event)">
+        <div class="p-6 space-y-4">
+          <h4 class="font-semibold text-white flex items-center gap-2"><i class="fa-solid fa-truck text-[var(--accent)]"></i> Thong Tin Giao Hang</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Họ và tên <span class="text-[var(--danger)]">*</span></label>
+              <input type="text" id="ck-name" class="input-field" placeholder="" required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Số điện thoại <span class="text-[var(--danger)]">*</span></label>
+              <input type="tel" id="ck-phone" class="input-field" placeholder="" required>
+              <p class="text-xs text-[var(--danger)] mt-1 hidden" id="ck-phone-error">Số điện thoại không hợp lệ (10 số, bắt đầu bằng 0)</p>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Địa chỉ giao hàng <span class="text-[var(--danger)]">*</span></label>
+            <textarea id="ck-address" class="input-field" rows="2" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" required></textarea>
+            <p class="text-xs text-[var(--danger)] mt-1 hidden" id="ck-address-error">Vui lòng nhập địa chỉ giao hàng</p>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-2 text-[var(--muted)]">Ghi chú</label>
+            <input type="text" id="ck-note" class="input-field" placeholder="Ghi chú tùy chọn (VD: Giao giờ hành chính)">
+          </div>
+
+          <hr class="border-[var(--border)]">
+          <h4 class="font-semibold text-white flex items-center gap-2"><i class="fa-solid fa-receipt text-[var(--accent)]"></i> Tóm tắt đơn hàng</h4>
+          <div id="checkout-summary" class="space-y-3"></div>
+          <div class="flex items-center justify-between pt-3 border-t border-[var(--border)]">
+            <span class="font-semibold text-white text-lg">Tổng cộng:</span>
+            <span class="font-display text-2xl font-bold" style="color:var(--accent);" id="checkout-total">0đ</span>
+          </div>
+        </div>
+                  <div class="mb-4">
+            
+            <div class="flex gap-3">
+              <label class="flex items-center gap-2 p-3 rounded-lg border border-border cursor-pointer transition hover:border-accent flex-1" style="background:var(--bg);">
+                <input type="radio" name="payment" value="cod" checked class="accent-[var(--accent)]">
+                <span class="text-sm text-fg">Thanh toán khi nhận hàng</span>
+              </label>
+              <label class="flex items-center gap-2 p-3 rounded-lg border border-border cursor-pointer transition hover:border-accent flex-1" style="background:var(--bg);">
+                <input type="radio" name="payment" value="bank" class="accent-[var(--accent)]">
+                <span class="text-sm text-fg">Chuyển khoản</span>
+              </label>
+            </div>
+          </div>
+        <div class="p-5 border-t border-[var(--border)]">
+          <button type="submit" class="btn-primary w-full justify-center py-3.5 text-base">
+            <i class="fa-solid fa-check"></i> Xác nhận đặt hàng
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ===== LỊCH SỬ ĐƠN HÀNG ===== -->
+  <div id="order-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-content w-full max-w-2xl p-0 relative">
+      <div class="p-4 border-b border-border flex items-center justify-between">
+        <h3 class="font-display text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-accent"></i> Lịch Sử Đơn Hàng
+        </h3>
+        <button class="w-7 h-7 rounded-md flex items-center justify-center text-muted hover:text-fg hover:bg-bg transition" onclick="closeOrderHistory()"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div id="order-list" class="p-4 overflow-y-auto" style="max-height:70vh;"></div>
+    </div>
+  </div>
+  <!-- ===== ORDER SUCCESS OVERLAY ===== -->
+  <div id="order-success" class="order-success-overlay">
+    <div class="success-check mb-6"><svg viewBox="0 0 40 40"><path d="M10 20 L17 27 L30 13" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h2 class="font-display text-3xl font-bold text-white mb-3">Đặt Hàng Thành Công!</h2>
+    <p class="text-[var(--muted)] mb-8 text-center max-w-sm">Đơn hàng của bạn đã được ghi nhận. Chúng tôi sẽ liên hệ trong thời gian sớm nhất.</p>
+    <button class="btn-primary text-base px-10 py-3.5" onclick="closeOrderSuccess()">Tiếp tục mua sắm</button>
+  </div>
+  <script src="js/scriptuser.js"></script>
+</body>
+</html>

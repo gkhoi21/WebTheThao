@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HUỆ THU SPORT - Quản Trị Shop</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    :root { --bg:#0B0B0F; --bg2:#111118; --card:#18181F; --border:#2A2A36; --fg:#F0F0F5; --muted:#7A7A8E; --accent:#2563EB; --accent-hover:#2563EB; --success:#00C853; --danger:#FF1744; --warning:#FFAB00; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    body { font-family:'Source Sans 3',sans-serif; background:var(--bg); color:var(--fg); }
+    .font-display { font-family:'Oswald',sans-serif; }
+    .input-field { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--fg); width:100%; font-size:14px; transition:border-color 0.2s; outline:none; font-family:inherit; }
+    .input-field:focus { border-color:var(--accent); }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:12px 16px; text-align:left; border-bottom:1px solid var(--border); font-size:14px; }
+    th { color:var(--muted); font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.5px; }
+    tr:hover td { background:rgba(255,255,255,0.02); }
+    .badge { padding:3px 10px; border-radius:20px; font-size:12px; font-weight:600; display:inline-block; }
+    .badge-success { background:rgba(0,200,83,0.12); color:var(--success); }
+    .badge-danger { background:rgba(255,23,68,0.12); color:var(--danger); }
+    .badge-warning { background:rgba(255,171,0,0.12); color:var(--warning); }
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:1000; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s; backdrop-filter:blur(4px); }
+    .modal-overlay.active { opacity:1; pointer-events:auto; }
+    .modal-content { background:var(--card); border:1px solid var(--border); border-radius:14px; max-height:90vh; overflow-y:auto; width:95%; transform:scale(0.95); transition:transform 0.25s; }
+    .modal-overlay.active .modal-content { transform:scale(1); }
+
+    /* ===== LOGIN GATE ===== */
+    #login-gate {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+    }
+    #login-gate .glow {
+      position: absolute; border-radius: 50%; background: var(--accent);
+      filter: blur(120px); opacity: 0.06; pointer-events: none;
+    }
+    #login-gate .box {
+      width: 100%; max-width: 380px; padding: 2.5rem;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; position: relative; z-index: 1;
+    }
+    @keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
+    #login-gate .box.shake { animation: shake 0.35s ease; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- ==================== MÀN HÌNH ĐĂNG NHẬP ==================== -->
+  <div id="login-gate">
+    <div class="glow" style="width:500px;height:500px;top:-30%;left:-15%;"></div>
+    <div class="glow" style="width:400px;height:400px;bottom:-25%;right:-10%;"></div>
+    <div class="box" id="login-box">
+      <div style="text-align:center;margin-bottom:2rem;">
+        <div style="width:56px;height:56px;border-radius:50%;background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);display:flex;align-items:center;justify-content:center;margin:0 auto;color:var(--accent);font-size:1.25rem;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h1 class="font-display" style="font-size:1.5rem;font-weight:700;color:#fff;margin-top:1rem;">HUỆ THU <span style="color:var(--accent);">SPORT</span></h1>
+        <p style="color:var(--muted);font-size:0.875rem;margin-top:0.25rem;">Đăng nhập để vào trang quản trị</p>
+      </div>
+      <form id="login-form">
+        <div style="margin-bottom:1rem;">
+          <label for="lg-user" style="display:block;font-size:0.875rem;font-weight:500;color:var(--muted);margin-bottom:0.5rem;">Tài khoản</label>
+          <div style="position:relative;">
+            <i class="fa-solid fa-user" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;"></i>
+            <input type="text" id="lg-user" class="input-field" style="padding-left:2.5rem;" placeholder="Nhập tài khoản..." required autocomplete="username">
+          </div>
+        </div>
+        <div style="margin-bottom:1rem;">
+          <label for="lg-pass" style="display:block;font-size:0.875rem;font-weight:500;color:var(--muted);margin-bottom:0.5rem;">Mật khẩu</label>
+          <div style="position:relative;">
+            <i class="fa-solid fa-lock" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;"></i>
+            <input type="password" id="lg-pass" class="input-field" style="padding-left:2.5rem;" placeholder="Nhập mật khẩu..." required autocomplete="current-password">
+          </div>
+        </div>
+        <p id="lg-err" style="font-size:0.8rem;color:var(--danger);margin-bottom:0.75rem;display:none;">Sai tài khoản hoặc mật khẩu</p>
+        <button type="submit" style="width:100%;padding:12px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.2s;">
+          <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== NỘI DUNG ADMIN (bị ẩn khi chưa đăng nhập) ==================== -->
+  <div id="admin-wrap" style="display:none;">
+
+    <!-- Header -->
+    <header class="border-b border-[var(--border)] sticky top-0 z-50" style="background:rgba(11,11,15,0.9);backdrop-filter:blur(12px);">
+      <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="font-display text-xl font-bold tracking-wider"><span style="color:var(--accent);">HUỆ THU</span> <span class="text-white">SPORT</span></div>
+          <span class="text-xs font-semibold px-2 py-1 rounded bg-[var(--accent)] text-white uppercase">Admin</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <button onclick="adminLogout()" class="text-sm text-[var(--danger)] hover:underline transition flex items-center gap-2">
+            <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+          </button>
+          <button onclick="loadData()" class="h-9 px-4 rounded-lg bg-[var(--accent)] text-white text-sm font-semibold hover:bg-[var(--accent-hover)] transition flex items-center gap-2">
+            <i class="fa-solid fa-rotate"></i> Làm mới
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Stats -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="p-5 rounded-xl border border-[var(--border)]" style="background:var(--card);">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[var(--muted)] text-sm font-medium">Tài khoản</span>
+            <div class="w-10 h-10 rounded-lg bg-[rgba(66,165,245,0.1)] flex items-center justify-center text-[#42A5F5]"><i class="fa-solid fa-users"></i></div>
+          </div>
+          <div class="font-display text-3xl font-bold text-white" id="stat-users">0</div>
+        </div>
+        <div class="p-5 rounded-xl border border-[var(--border)]" style="background:var(--card);">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[var(--muted)] text-sm font-medium">Đơn hàng</span>
+            <div class="w-10 h-10 rounded-lg bg-[rgba(0,200,83,0.1)] flex items-center justify-center text-[var(--success)]"><i class="fa-solid fa-cart-shopping"></i></div>
+          </div>
+          <div class="font-display text-3xl font-bold text-white" id="stat-orders">0</div>
+        </div>
+        <div class="p-5 rounded-xl border border-[var(--border)]" style="background:var(--card);">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[var(--muted)] text-sm font-medium">Doanh thu</span>
+            <div class="w-10 h-10 rounded-lg bg-[rgba(255,77,0,0.1)] flex items-center justify-center text-[var(--accent)]"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+          </div>
+          <div class="font-display text-3xl font-bold text-white" id="stat-revenue">0đ</div>
+        </div>
+        <div class="p-5 rounded-xl border border-[var(--border)]" style="background:var(--card);">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-[var(--muted)] text-sm font-medium">Sắp hết hàng</span>
+            <div class="w-10 h-10 rounded-lg bg-[rgba(255,23,68,0.1)] flex items-center justify-center text-[var(--danger)]"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          </div>
+          <div class="font-display text-3xl font-bold text-white" id="stat-lowstock">0</div>
+        </div>
+      </div>
+
+      <!-- Accounts -->
+      <div class="rounded-xl border border-[var(--border)] mb-8 overflow-hidden" style="background:var(--card);">
+        <div class="p-4 border-b border-[var(--border)] flex items-center justify-between">
+          <h2 class="font-display text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-users text-[#42A5F5]"></i> Danh Sách Tài Khoản Khách Hàng</h2>
+          <input type="text" id="search-user" class="input-field w-64 text-sm" placeholder="Tìm email, tên..." oninput="filterUsers()">
+        </div>
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr><th>STT</th><th>Họ tên</th><th>Email</th><th>Số điện thoại</th><th>Địa chỉ</th></tr></thead>
+            <tbody id="user-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Orders -->
+      <div class="rounded-xl border border-[var(--border)] overflow-hidden" style="background:var(--card);">
+        <div class="p-4 border-b border-[var(--border)] flex items-center justify-between">
+          <h2 class="font-display text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-receipt text-[var(--success)]"></i> Tất Cả Đơn Hàng</h2>
+          <input type="text" id="search-order" class="input-field w-64 text-sm" placeholder="Tìm mã đơn, tên..." oninput="filterOrders()">
+        </div>
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr><th>Mã Đơn</th><th>Khách hàng</th><th>Ngày đặt</th><th>Thanh toán</th><th>Tổng tiền</th><th>Trạng thái</th><th>Hành động</th></tr></thead>
+            <tbody id="order-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Chi tiết đơn hàng -->
+  <div id="detail-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-content w-full max-w-2xl p-0 relative">
+      <div class="p-4 border-b border-[var(--border)] flex items-center justify-between">
+        <h3 class="font-display text-lg font-bold text-white">Chi Tiết Đơn Hàng</h3>
+        <button class="w-7 h-7 rounded-md flex items-center justify-center text-[var(--muted)] hover:text-[var(--fg)] hover:bg-[var(--bg)] transition" onclick="closeDetailModal()"><i class="fa-solid fa-xmark text-sm"></i></button>
+      </div>
+      <div id="detail-content" class="p-5"></div>
+    </div>
+  </div>
+<script src="js/scriptadmin.js"></script>
+</body>
+</html>
